@@ -1,131 +1,51 @@
-import random
-
-
-class Node:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.next = None
-
-    def __get__(self):
-        return self.key, self.value
+from random import random
 
 
 class HashTable:
-    def __init__(self, capacity):
-        self.capacity = capacity  # емкость
-        self.size = 0  # размер массива
-        self.table = [None] * (self.capacity + int(self.capacity / 2))  # задаем размер таблицы
-        self.factor = 2  # scale factor
-        self.ckei = 1
+    def __init__(self, arr=None):
+        self.keys = []
+        self.hashes = []
+        if arr is not None:
+            self.appendArray(arr)
 
-    def resize(self):
-        self.capacity *= self.factor
-        new_table = [None] * (self.capacity + int(self.capacity / 2))
+    def appendKey(self, item, length=None):
+        if length is None:
+            length = len(self.keys)
 
-        for node in self.table:
-            if node is not None:
-                self.insert(key=node.key, value=node.value, table=new_table)
+        self.checkKeyExists(item)
+        temp = hash(tuple(item)) % length
+        # if type(item) == list or type(item) == str:
+        #     temp = hash(tuple(item)) % length
+        # else:
+        #     temp = hash(item) % (length + 1)
 
-        self.table = new_table
+        if self.checkCollisions(temp):
+            temp = self.simpleRehash(item, length)
 
-        return
+        self.hashes.append(temp)
+        self.keys.append(item)
 
-    def _hash(self, key, length, i):
-        return hash(tuple(key)) % length + i
+    def printHashes(self):
+        # for i in range(len(self.keys)):
+        #     print(self.hashes[i], self.keys[i])
+        # print()
+        return [self.hashes, self.keys]
 
-    def checkCollisions(self, index, table=None):
-        if table is None:
-            table = self.table
+    def appendArray(self, arr):
+        for item in arr:
+            self.appendKey(item, len(arr))
 
-        try:
-            current = table[index]
-        except IndexError:
-            print('увел колво ячеек')
-
-        return current is not None  # если не пусто то коллизия есть
-
-    def insert(self, key, value, table=None):
-        if table is None:
-            table = self.table
-
-        i = 0
-
+    def simpleRehash(self, key, length):
+        i = 1
         while True:
-            index = self._hash(key=key, length=self.capacity, i=i)
+            temp = hash(tuple(key)) % length + i
+            if not self.checkCollisions(temp):
+                return temp
+            i = i + 1
 
-            if not self.checkCollisions(index=index, table=table):
-                table[index] = Node(key, value)
-                self.size += 1
+    def checkCollisions(self, hashValue):
+        return hashValue in self.hashes
 
-                return
-            else:
-                current = self.table[index]
-
-                while current:
-                    if current.key == key:
-                        current.value = value
-
-                        return
-                    current = current.next
-
-                new_node = Node(key, value)
-                new_node.next = self.table[index]
-                self.table[index] = new_node
-                self.size += 1
-
-                return
-
-    def search(self, key):
-        index = self._hash(key=key, length=self.capacity, i=0)
-
-        if self.checkCollisions(index=index):
-            current = self.table[index]
-
-            while current:
-                if current.key == key:
-                    return current.value
-                current = current.next
-
-        raise KeyError(key)
-
-    def remove(self, key):
-
-        index = self._hash(key=key, length=self.capacity, i=0)
-
-        previous = None
-        current = self.table[index]
-
-        while current:
-            if current.key == key:
-                if previous:
-                    previous.next = current.next
-                else:
-                    self.table[index] = current.next
-                self.size -= 1
-                return
-            previous = current
-            current = current.next
-
-        raise KeyError(key)
-
-    def __get__(self):
-        res = []
-
-        for i in self.table:
-            if i is not None:
-                res.append([i.key] + i.value)
-                if i.next is not None:
-                    res.append([i.next.key] + i.next.value)
-
-        return res
-
-    def __len__(self):
-        return self.size
-
-    def __contains__(self, key):
-        try:
-            self.search(key)
-            return True
-        except KeyError:
-            return False
+    def checkKeyExists(self, key):
+        if key in self.keys:
+            raise Exception("Key '{}' already exists".format(key))

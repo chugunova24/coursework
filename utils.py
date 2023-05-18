@@ -13,7 +13,7 @@ def read_file(file, delimiter, num_columns):
                 new_arr.append(arr[start:end])
                 start = idx + 1
 
-        return [new_arr[i:i + num_columns] for i in range(0, len(new_arr), num_columns)]
+        return [new_arr[i:i + num_columns] for i in range(0, len(new_arr), num_columns)][1:]
 
 
 def fastSort(matrix, column_number):
@@ -42,7 +42,7 @@ def fastSort(matrix, column_number):
         if r > lptr:
             reqFastSort(arr, lptr, r)
 
-    # hashes = matrix[0]
+    hashes = matrix[0]
     arr = matrix[1]
     reqFastSort(arr, 0, len(arr) - 1)
     return arr
