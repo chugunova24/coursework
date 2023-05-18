@@ -57,6 +57,9 @@ class HashTable:
             if not self.checkCollisions(index=index, table=table):
                 table[index] = Node(key, value)
                 self.size += 1
+                # print(f'Добавлено {index} // {key}')
+                # print(f'Размер текщий {self.ckei}')
+                self.ckei += 1
 
                 return
             else:
@@ -65,16 +68,56 @@ class HashTable:
                 while current:
                     if current.key == key:
                         current.value = value
-
+                        # print(f'обновлено {index} // {key}')
                         return
                     current = current.next
+                    # print(index)
 
                 new_node = Node(key, value)
                 new_node.next = self.table[index]
                 self.table[index] = new_node
+                # print(f'добавлено в цепочку {index} // {key}')
                 self.size += 1
-
+                self.ckei += 1
                 return
+
+            # i += 1
+
+        # i = 0
+        #
+        # # if self.size == self.capacity:
+        # #     self.resize()
+        #
+        # while True:
+        #     index = self._hash(key=key, length=self.capacity, i=i)
+        #
+        #     if not self.checkCollisions(index=index, table=table):
+        #         table[index] = Node(key, value)
+        #         self.size += 1
+        #         # print(f'index: {index}')
+        #         # # print(f'Добавлено {self.ckei}')
+        #         # print(f'Добавлено {key}')
+        #         # self.ckei += 1
+        #
+        #         return
+        #     i += 1
+
+        # print(self.table[index].key)
+
+        # if checkCollisions(key=key, index=index):
+        #     self.table[index] = Node(key, value)  # insert("apple", 3)
+        #     self.size += 1
+        # else:
+        #     current = self.table[index]
+        #     while current:
+        #         if current.key == key:
+        #             current.value = value
+        #             return
+        #         current = current.next
+        #     new_node = Node(key, value)
+        #     new_node.next = self.table[index]
+        #     self.table[index] = new_node
+        #     self.size += 1
 
     def search(self, key):
         index = self._hash(key=key, length=self.capacity, i=0)
@@ -88,6 +131,27 @@ class HashTable:
                 current = current.next
 
         raise KeyError(key)
+
+        # index = self._hash(key=key, length=self.capacity, i=0)
+        # i = 0
+        #
+        # print(f'  : {self.checkCollisions(index=index)}    // {index}')
+        #
+        # # if self.checkCollisions(index=index):
+        # if self.checkCollisions(index=index):
+        #     while index <= (self.capacity + int(self.capacity / 2)):
+        #
+        #         index = self._hash(key=key, length=self.capacity, i=i)
+        #         # if self.table[index] is not None:
+        #         current = self.table[index]
+        #
+        #         if current.key == key:
+        #             return [current.key, current.value]
+        #
+        #         else:
+        #             i += 1
+
+        # raise KeyError(key)
 
     def remove(self, key):
 
@@ -110,15 +174,17 @@ class HashTable:
         raise KeyError(key)
 
     def __get__(self):
-        res = []
-
+        # return self.table
+        # ck = 0
         for i in self.table:
             if i is not None:
-                res.append([i.key] + i.value)
+                # print([i.key, i.value])
+                print([i.key, i.value])
+                # ck += 1
                 if i.next is not None:
-                    res.append([i.next.key] + i.next.value)
-
-        return res
+                    print([i.next.key, i.next.value])
+                    # ck += 1
+        # print(f'ck: {ck}')
 
     def __len__(self):
         return self.size

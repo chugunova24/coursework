@@ -8,21 +8,29 @@ NUM_COLUMNS = 7
 arr = read_file(FILENAME, DELIMITER, NUM_COLUMNS)
 # print(read_file(FILENAME, DELIMITER, NUM_COLUMNS))
 
-hashes = HashTable(arr=arr)
-# hashes.printHashes()
-# print(hashes.printHashes())
 
-arr_hashes = hashes.printHashes()
-arr_h = arr_hashes[1]
-# print(arr_h)
+hashes = HashTable(capacity=len(arr))
+i=0
+for elem in arr[1:]:
+    hashes.insert(key=elem[0], value=elem[1:])
+    i +=1
+print(i)
+print()
+
+
+# print(hashes.__get__())
+
+arr = hashes.__get__()
+# print(arr)
 
 
 # общая выручка
 def summary_revenue(arr):
     total = 0
 
-    for i in range(len(arr)):
-        total += int(arr[i][-1])
+    for idx in range(len(arr)):
+        print(idx)
+        total += int(arr[idx][-1])
 
     return total
 
@@ -59,14 +67,15 @@ def accounting(arr):
     report = []
     for idx in range(len(arr)):
         report.append([
-            arr[idx][2],
-            arr[idx][4],
-            round(calc_percentage(x=int(arr[idx][6]), n=total_sum), 2),
+                    arr[idx][2],
+                    arr[idx][4],
+                    round(calc_percentage(x=int(arr[idx][6]), n=total_sum), 2),
         ])
     return [total_sum, report]
 
 
-
-print(accounting(arr_h))
+print()
+print(accounting(arr))
+print(f'len: {arr.__len__()}')
 
 # add excep handl
